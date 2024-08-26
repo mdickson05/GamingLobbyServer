@@ -1,0 +1,31 @@
+﻿<Page x:Class="GameLobbyClient.MainLobbyPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:GameLobbyClient"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="MainLobbyPage">
+
+    <Grid>
+        <!-- Button for lobby creation -->
+        <Button Name="CreateLobbyButton" Content="Create Lobby" HorizontalAlignment="Left" Margin="598,360,0,0" VerticalAlignment="Top" Width="104" Height="27" Click="CreateLobbyButton_Click"/>
+        <!-- Logout button, placeholder and not yet implemented -->
+        <Button Name="LogoutButton" Content="Logout" HorizontalAlignment="Left" Margin="46,365,0,0" VerticalAlignment="Top" Height="26" Width="70"/>
+        <!-- Shows current client username, just a placeholder and yet to be used properly -->
+        <TextBlock Name="UsernameBlock" HorizontalAlignment="Left" Margin="56,315,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Visibility="Visible"/>
+        <!-- For Lobby Name creation combinbed with the create lobby button-->
+        <TextBox Name="LobbyNameBox" HorizontalAlignment="Left" Margin="541,285,0,0" TextWrapping="Wrap" Text="Enter a lobby name" VerticalAlignment="Top" Width="218" Height="38"/>
+
+        <!-- Holds lobby buttons in a nice vertical setup defaults to collapsed(hidden) -->
+        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center">
+            <Button Name="LobbyButtonOne" Content="Lobby 1" Visibility="Collapsed" Width="200" Height="40" Margin="5" Click="LobbyButtonOne_Click"/>
+            <Button Name="LobbyButtonTwo" Content="Lobby 2" Visibility="Collapsed" Width="200" Height="40" Margin="5" Click="LobbyButtonTwo_Click"/>
+            <Button Name="LobbyButtonThree" Content="Lobby 3" Visibility="Collapsed" Width="200" Height="40" Margin="5" Click="LobbyButtonThree_Click"/>
+            <Button Name="LobbyButtonFour" Content="Lobby 4" Visibility="Collapsed" Width="200" Height="40" Margin="5" Click="LobbyButtonFour_Click"/>
+            <Button Name="LobbyButtonFive" Content="Lobby 5" Visibility="Collapsed" Width="200" Height="40" Margin="5" Click="LobbyButtonFive_Click"/>
+        </StackPanel>
+
+    </Grid>
+</Page>

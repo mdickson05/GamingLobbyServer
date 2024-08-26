@@ -8,6 +8,6 @@ namespace DataServer
         public GLSImplementation() { }
 
         // REMOVE - NOT A REAL FUNCTION
-        public int foo() { return 1 + 1; }
+        public int Foo() { return 1 + 1; }
     }
 }

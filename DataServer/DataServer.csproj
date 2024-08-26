@@ -46,7 +46,7 @@
   <ItemGroup>
     <Compile Include="DataService.cs" />
     <Compile Include="GLSImplementation.cs" />
-    <Compile Include="GLSInterface.cs" />
+    <Compile Include="IGLSInterface.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

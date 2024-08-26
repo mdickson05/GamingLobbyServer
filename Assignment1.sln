@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35208.52
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataServer", "DataServer\DataServer.csproj", "{A91C72A8-190D-41C5-96C8-EE4208A076FF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A91C72A8-190D-41C5-96C8-EE4208A076FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A91C72A8-190D-41C5-96C8-EE4208A076FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A91C72A8-190D-41C5-96C8-EE4208A076FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A91C72A8-190D-41C5-96C8-EE4208A076FF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {89AA23F6-47B6-400C-8A13-43BD058EF756}
+	EndGlobalSection
+EndGlobal

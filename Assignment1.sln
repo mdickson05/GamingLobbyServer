@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataServer", "DataServer\Da
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Rooms", "Rooms\Rooms.csproj", "{0789FE8F-202A-4269-8EF2-A369D9E22733}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users", "Users\Users.csproj", "{6D842DBA-EC26-4F5C-8BD7-0E4FB4A6A4E0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{0789FE8F-202A-4269-8EF2-A369D9E22733}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0789FE8F-202A-4269-8EF2-A369D9E22733}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0789FE8F-202A-4269-8EF2-A369D9E22733}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D842DBA-EC26-4F5C-8BD7-0E4FB4A6A4E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D842DBA-EC26-4F5C-8BD7-0E4FB4A6A4E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D842DBA-EC26-4F5C-8BD7-0E4FB4A6A4E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D842DBA-EC26-4F5C-8BD7-0E4FB4A6A4E0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

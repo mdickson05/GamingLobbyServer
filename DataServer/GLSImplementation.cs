@@ -5,7 +5,7 @@ using Users;
 namespace DataServer
 {
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
-    internal class GLSImplementation
+    public class GLSImplementation : IGLSInterface
     {
         public RoomManager RoomManager { get; set; }
 

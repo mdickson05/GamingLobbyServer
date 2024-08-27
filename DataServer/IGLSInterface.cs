@@ -13,7 +13,7 @@ namespace DataServer
         // TODO: Implement server interface
         // OperationContract tag to define as function in the contract
         [OperationContract]
-        // NOT A REAL FUNCTION - REMOVE
-        int Foo();
+        void JoinRoom();
+
     }
 }

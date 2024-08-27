@@ -1,17 +1,16 @@
-﻿using Rooms;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Users
 {
-    public class User
+    internal class User
     {
         public string Username { get; set; }
-        public List<Room> Rooms { get; set; }
+        public List<string> Rooms { get; set; }
 
         public User(string username)
         {
             this.Username = username;
-            this.Rooms = new List<Room>(); // no room yet
+            this.Rooms = new List<string>(); // no room yet
         }
     }
 }

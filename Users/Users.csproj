@@ -46,11 +46,5 @@
     <Compile Include="UserGenerator.cs" />
     <Compile Include="UserManager.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Rooms\Rooms.csproj">
-      <Project>{0789fe8f-202a-4269-8ef2-a369d9e22733}</Project>
-      <Name>Rooms</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

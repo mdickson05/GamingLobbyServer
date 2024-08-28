@@ -45,5 +45,22 @@ namespace Rooms
                 return false;
             }
         }
+
+        public void AddToRoom(string roomname, string username)
+        {
+            Room room = GetRoomByName(roomname);
+            room.Users.Add(username);
+        }
+
+        public void DeleteFromRoom(string roomname, string username)
+        {
+            Room room = GetRoomByName(roomname);
+            room.Users.Remove(username);
+        }
+
+        private Room GetRoomByName(string roomname)
+        {
+            return RoomsList[roomname];
+        }
     }
 }

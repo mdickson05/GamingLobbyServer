@@ -12,7 +12,7 @@
         <!-- Button for lobby creation -->
         <Button Name="CreateLobbyButton" Content="Create Lobby" HorizontalAlignment="Left" Margin="598,360,0,0" VerticalAlignment="Top" Width="104" Height="27" Click="CreateLobbyButton_Click"/>
         <!-- Logout button, placeholder and not yet implemented -->
-        <Button Name="LogoutButton" Content="Logout" HorizontalAlignment="Left" Margin="46,365,0,0" VerticalAlignment="Top" Height="26" Width="70"/>
+        <Button Name="LogoutButton" Content="Logout" HorizontalAlignment="Left" Margin="46,365,0,0" VerticalAlignment="Top" Height="26" Width="70" Click="LogoutMainLobby_Click"/>
         <!-- Shows current client username, just a placeholder and yet to be used properly -->
         <TextBlock Name="UsernameBlock" HorizontalAlignment="Left" Margin="56,315,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Visibility="Visible"/>
         <!-- For Lobby Name creation combinbed with the create lobby button-->

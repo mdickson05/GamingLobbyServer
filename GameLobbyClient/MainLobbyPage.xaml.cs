@@ -94,6 +94,12 @@ namespace GameLobbyClient
             }
         }
 
+        private void LogoutMainLobby_Click(object sender, RoutedEventArgs e)
+        {
+            LoginPage loginPage = new LoginPage();
+            NavigationService.Navigate(loginPage);
+        }
+
         /*
          * Each button click is represented by what lobby it is.
          * It takes the user-named lobby and passes it to a ChatLobbyPage

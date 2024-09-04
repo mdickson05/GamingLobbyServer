@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataServer;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -24,16 +25,18 @@ namespace GameLobbyClient
         public ObservableCollection<string> PrivateChatMessages { get; set; }
         public ObservableCollection<string> testPrivateUsers { get; set; }
 
+        private IGLSInterface _client;
+        private string _username;
         /*
          * Might take in person object
          * Will make similar to ChatLobbyPage for now
-         * Might implement a back button to return to ChatLobbyPage
-         *  that user was previously in or MainLobbyPage to re-enter
          */
-        public PrivateMessagePage(string userName)
+        public PrivateMessagePage(string userPrivateName, IGLSInterface client, string username)
         {
             InitializeComponent();
-            PrivateNameBlock.Text = userName;
+            _client = client;
+            _username = username;
+            PrivateNameBlock.Text = userPrivateName;
             DataContext = this; // Review in ChatLobbyPage for details
             PrivateChatMessages = new ObservableCollection<string>(); //Testing chat messages
             testPrivateUsers = new ObservableCollection<string>(); //Testing users
@@ -51,7 +54,7 @@ namespace GameLobbyClient
          */
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            string message = $"{testPrivateUsers[0]}: {UserInputBox.Text}";
+            string message = $"{_username}: {UserInputBox.Text}";
             PrivateChatMessages.Add(message);
             UserInputBox.Clear();
         }
@@ -62,7 +65,7 @@ namespace GameLobbyClient
          */
         private void PrivateMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            string message = $"{testPrivateUsers[0]}: {UserInputBox.Text}";
+            string message = $"{_username}: {UserInputBox.Text}";
             PrivateChatMessages.Add(message);
             UserInputBox.Clear();
         }
@@ -72,7 +75,8 @@ namespace GameLobbyClient
          */
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            LoginPage loginPage = new LoginPage();
+            _client.Logout(_username);
+            LoginPage loginPage = new LoginPage(_client);
             NavigationService.Navigate(loginPage);
         }
 

@@ -10,7 +10,7 @@ using Users;
 namespace DataServer
 {
     [ServiceContract]
-    internal interface IGLSInterface
+    public interface IGLSInterface
     {
         // OperationContract tag to define as function in the contract
         [OperationContract]

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataServer;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -25,6 +26,10 @@ namespace GameLobbyClient
         public ObservableCollection<string> ChatMessages { get; set; }
         public ObservableCollection<string> testUsers { get; set; }
 
+        private string _username;
+        private string _lobbyName;
+        private IGLSInterface _client;
+
         /*
          * Creates instances of both lists and adds some test strings
          * 
@@ -36,13 +41,16 @@ namespace GameLobbyClient
          *  for lobby reselection
          * 
          */
-        public ChatLobbyPage(string lobbyName)
+        public ChatLobbyPage(string lobbyName, IGLSInterface client, string username)
         {
             InitializeComponent();
             DataContext = this; // Review above comment block
             LobbyNameBlock.Text = lobbyName; //Sets lobby name
             ChatMessages = new ObservableCollection<string>(); //Testing chat messages
             testUsers = new ObservableCollection<string>(); //Testing users
+
+            _client = client;
+            _username = username;
 
             testUsers.Add("Joe");
             testUsers.Add("Bob");
@@ -70,8 +78,8 @@ namespace GameLobbyClient
         private void PrivateMessageButton_Click(object sender, RoutedEventArgs e)
         {
             Button tempButton = sender as Button;
-            string userName = tempButton.Content.ToString();
-            PrivateMessagePage privateMessagePage = new PrivateMessagePage(userName);
+            string userMessageName = tempButton.Content.ToString();
+            PrivateMessagePage privateMessagePage = new PrivateMessagePage(userMessageName, _client, _username);
             NavigationService.Navigate(privateMessagePage);
         }
 
@@ -80,7 +88,8 @@ namespace GameLobbyClient
          */
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-            LoginPage loginPage = new LoginPage();
+            _client.Logout(_username);
+            LoginPage loginPage = new LoginPage(_client);
             NavigationService.Navigate(loginPage);
         }
 

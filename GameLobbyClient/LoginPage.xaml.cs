@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +21,11 @@ namespace GameLobbyClient
     /// </summary>
     public partial class LoginPage : Page
     {
-        public LoginPage()
+        private IGLSInterface _client;
+        public LoginPage(IGLSInterface client)
         {
             InitializeComponent();
+            _client = client;
         }
 
         /* 
@@ -32,8 +35,15 @@ namespace GameLobbyClient
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var username = LoginBox.Text;
+            _client.CreateUser(username);
+            NavigationService.Navigate(new MainLobbyPage(_client, username));
+            
+            /* Commented out testing code to implement server use.
+          
+            var username = LoginBox.Text;
             MainLobbyPage lobbyPage = new MainLobbyPage(username);
             NavigationService.Navigate(lobbyPage);
+            */
         }
     }
 }

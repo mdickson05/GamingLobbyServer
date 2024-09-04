@@ -83,5 +83,13 @@ namespace GameLobbyClient
             LoginPage loginPage = new LoginPage();
             NavigationService.Navigate(loginPage);
         }
+
+        /*
+         * Simple back button to return to MainLobbyPage
+         */
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.GoBack();
+        }
     }
 }

@@ -45,9 +45,10 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <!-- User Input, Send Button and Logout button-->
+        <!-- User Input, Send Button, Logout button and Back button-->
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
-            <Button Name="LogoutButton" Width="100" Content="Logout" Click="LogoutButton_Click"/>
+            <Button Name="LogoutButton" Width="50" Content="Logout" Click="LogoutButton_Click"/>
+            <Button Name="BackButton" Width="50" Content="Back" Click="BackButton_Click"/>
             <TextBox Name="UserInputBox" Width="560" Height="30"/>
             <Button Name="SendMessageButton" Content="Send Message" Width="100" Click="SendMessageButton_Click"/>
         </StackPanel>

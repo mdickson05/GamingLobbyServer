@@ -1,6 +1,10 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -82,6 +86,51 @@ namespace GameLobbyClient
         {
             LoginPage loginPage = new LoginPage();
             NavigationService.Navigate(loginPage);
+        }
+
+        /*
+         * Button that uploads file to chat
+         */
+        private void UploadFile_Click(object sender, RoutedEventArgs e) 
+        { 
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+            //string appFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            //string path = appFolder + @"\MyAppLibrary\";
+            //if (!Directory.Exists(path))
+            //{
+            //    Directory.CreateDirectory(path);
+
+            //    // Add existing files to that folder
+            //    var rm = Properties.Resources.ResourceManager;
+            //    var resSet = rm.GetResourceSet(CultureInfo.CurrentUICulture, true, true);
+            //    foreach (var res in resSet)
+            //    {
+            //        var entry = ((DictionaryEntry)res);
+            //        var name = (string)entry.Key;
+            //        var file = (byte[])rm.GetObject(name);
+
+            //        var filePath = path + name + ".dxf";
+            //        File.WriteAllBytes(filePath, file);
+            //    }
+            //}
+
+            //// Load all files from the library folder
+            //string[] filePaths = Directory.GetFiles(path, "*.dxf");
+            //Nullable bool to check if file was selected
+            int? i = null;
+
+            bool? response = dlg.ShowDialog();
+
+            if (response == true) {
+                string filepath = dlg.FileName;
+                ChatMessages.Add($"File uploaded: {filepath}");
+                //FileInfo fileInfo = new FileInfo(filepath);
+                ChatMessages.Add(filepath);
+                //{ 
+                //    FileName = filename,
+                //    FileSize = string.Format("{0} {1}", fileInfo.Length/1.049e+6)
+                //})
+            }
         }
     }
 }

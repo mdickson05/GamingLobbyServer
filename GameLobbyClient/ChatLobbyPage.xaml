@@ -48,8 +48,9 @@
         <!-- User Input, Send Button and Logout button-->
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
             <Button Name="LogoutButton" Width="100" Content="Logout" Click="LogoutButton_Click"/>
-            <TextBox Name="UserInputBox" Width="560" Height="30"/>
+            <TextBox x:Name="UserInputBox" Width="480" Height="30"/>
             <Button Name="SendMessageButton" Content="Send Message" Width="100" Click="SendMessageButton_Click"/>
+            <Button Name="SendFileButton" Content="Upload File" Width="100" Click="UploadFile_Click"/>
         </StackPanel>
     </Grid>
 </Page>

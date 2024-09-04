@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Users
 {
@@ -25,6 +26,7 @@ namespace Users
 
 
             Users.Add(username, User);
+            LogDictionaryState();
             return true;
         }
         // The function calling Logout should check whether the user calling it is actually logged in
@@ -52,6 +54,12 @@ namespace Users
 
         public bool InRoom(string roomname, string username)
         {
+            if(!Users.ContainsKey(username))
+            {
+                Console.WriteLine($"Error: User '{username}' not found in Users dictionary.");
+                return false;
+            }
+            
             User user = Users[username];
 
             List<string> userRoomsList = user.Rooms;
@@ -70,6 +78,15 @@ namespace Users
         private User GetUserByName(string username)
         {
             return Users[username];
+        }
+
+        private void LogDictionaryState()
+        {
+            Console.WriteLine("Initial state of Users dictionary:");
+            foreach (var kvp in Users)
+            {
+                Console.WriteLine($"Username: {kvp.Key}, User Object: {kvp.Value}");
+            }
         }
     }
 }

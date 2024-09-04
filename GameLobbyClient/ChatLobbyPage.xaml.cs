@@ -22,10 +22,6 @@ namespace GameLobbyClient
     /// </summary>
     public partial class ChatLobbyPage : Page
     {
-        //Observable collections allows visual updating for both lists
-        public ObservableCollection<string> ChatMessages { get; set; }
-        public ObservableCollection<string> testUsers { get; set; }
-
         private string _username;
         private string _lobbyName;
         private IGLSInterface _client;
@@ -37,50 +33,74 @@ namespace GameLobbyClient
          * We bind the list to a specific object/thing
          * This will be replaced later when we incorporate classes and instances
          * 
-         * Might implement backout button for ChatLobbyPage to return to MainLobbyPage
-         *  for lobby reselection
-         * 
          */
         public ChatLobbyPage(string lobbyName, IGLSInterface client, string username)
         {
             InitializeComponent();
             DataContext = this; // Review above comment block
-            LobbyNameBlock.Text = lobbyName; //Sets lobby name
-            ChatMessages = new ObservableCollection<string>(); //Testing chat messages
-            testUsers = new ObservableCollection<string>(); //Testing users
-
             _client = client;
             _username = username;
-
-            testUsers.Add("Joe");
-            testUsers.Add("Bob");
-            testUsers.Add("Garry");
-            testUsers.Add("Beans");
-
-            ChatMessages.Add("Joe: Hello!");
-            ChatMessages.Add("Bob: Hi there!");
-            ChatMessages.Add("Garry: Good morning!");
+            _lobbyName = lobbyName;
+            LobbyNameBlock.Text = _lobbyName; //Sets lobby name
+            RefreshChatLobby();
         }
+
+
 
         /*
          * User send message button, takes input from box and saves into collection
          */
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            string message = $"{testUsers[0]}: {UserInputBox.Text}";
-            ChatMessages.Add(message);
+            string message = UserInputBox.Text;
+            _client.SendMessage(_lobbyName, _username, message, false);
             UserInputBox.Clear();
+            RefreshChatLobby(); //Might remove this
         }
 
         /*
-         * Copied above function just to test SendMessageButton_Click
+         * KeyDown method to allow Enter key to be used to send message
+         * instead of button click directly
+         */
+        private void UserInputBox_KeyDown(object sender, KeyEventArgs key)
+        {
+            if(key.Key == Key.Enter)
+            {
+                SendMessageButton_Click(sender, key);
+            }
+        }
+
+        /*
+         * Handles clicking someones name to message
+         * UserMessageName is the person you want to message name
          */
         private void PrivateMessageButton_Click(object sender, RoutedEventArgs e)
         {
             Button tempButton = sender as Button;
             string userMessageName = tempButton.Content.ToString();
-            PrivateMessagePage privateMessagePage = new PrivateMessagePage(userMessageName, _client, _username);
-            NavigationService.Navigate(privateMessagePage);
+            if (userMessageName == _username)
+            {
+                MessageBox.Show("You can't private message yourself.");
+            }
+            else
+            {
+                string privateLobbyName = makePrivateChatName(_username, userMessageName); //Created a private lobby name of current user and who they pm concatted
+                _client.CreatePrivateRoom(privateLobbyName);
+                _client.JoinRoom(privateLobbyName, _username, true);
+                PrivateMessagePage privateMessagePage = new PrivateMessagePage(_username, privateLobbyName, _client);
+                NavigationService.Navigate(privateMessagePage);
+            }
+        }
+
+        /*
+         * Simple method to make a consistent private lobby name
+         * Makes server handling easier
+         */
+        private string makePrivateChatName(string userNameOne, string userNameTwo)
+        {
+            var users = new List<string> { userNameOne, userNameTwo};
+            users.Sort();
+            return string.Join("", users);
         }
 
         /*
@@ -88,6 +108,7 @@ namespace GameLobbyClient
          */
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
+            _client.LeaveRoom(_lobbyName, _username, false);
             _client.Logout(_username);
             LoginPage loginPage = new LoginPage(_client);
             NavigationService.Navigate(loginPage);
@@ -98,7 +119,30 @@ namespace GameLobbyClient
          */
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
+            _client.LeaveRoom(_lobbyName, _username, false);
             NavigationService.GoBack();
+        }
+
+        /*
+         * Simple refresh button pulls information from server
+         */
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshChatLobby();
+            MessageBox.Show("Lobby refreshed!"); //Delete this later, just emphasizing the refresh
+        }
+
+        /*
+         * Simple refresh method that obtains the lists and sets the item sources for
+         * both boxes.
+         */
+        private void RefreshChatLobby()
+        {
+            var messages = _client.GetRoomMessages(_lobbyName, false);
+            var users = _client.GetRoomUsers(_lobbyName, false);
+
+            ChatHistoryBox.ItemsSource = messages;
+            UserListBox.ItemsSource = users;
         }
     }
 }

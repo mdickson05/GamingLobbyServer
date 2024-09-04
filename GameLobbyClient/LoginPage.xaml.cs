@@ -30,20 +30,29 @@ namespace GameLobbyClient
 
         /* 
          * Takes username from loginbox and passes to MainLobbyPage
-         * CHANGE when classes are implemented
          */
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var username = LoginBox.Text;
-            _client.CreateUser(username);
-            NavigationService.Navigate(new MainLobbyPage(_client, username));
-            
-            /* Commented out testing code to implement server use.
-          
-            var username = LoginBox.Text;
-            MainLobbyPage lobbyPage = new MainLobbyPage(username);
-            NavigationService.Navigate(lobbyPage);
-            */
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                MessageBox.Show("Please enter a valid username.");
+            }
+            else
+            {
+                _client.CreateUser(username);
+                NavigationService.Navigate(new MainLobbyPage(_client, username));
+            }
+        }
+        /*
+         * Simple keydown handler so on Enter key press it does the login button click
+         */
+        private void LoginBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                LoginButton_Click(sender, e);
+            }
         }
     }
 }

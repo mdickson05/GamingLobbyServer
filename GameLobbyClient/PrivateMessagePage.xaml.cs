@@ -22,41 +22,45 @@ namespace GameLobbyClient
     /// </summary>
     public partial class PrivateMessagePage : Page
     {
-        public ObservableCollection<string> PrivateChatMessages { get; set; }
-        public ObservableCollection<string> testPrivateUsers { get; set; }
-
         private IGLSInterface _client;
         private string _username;
+        private string _lobbyName;
         /*
          * Might take in person object
          * Will make similar to ChatLobbyPage for now
          */
-        public PrivateMessagePage(string userPrivateName, IGLSInterface client, string username)
+        public PrivateMessagePage(string username, string privateLobbyName, IGLSInterface client)
         {
             InitializeComponent();
             _client = client;
             _username = username;
-            PrivateNameBlock.Text = userPrivateName;
+            _lobbyName = privateLobbyName;
+            PrivateNameBlock.Text = $"PM: {privateLobbyName}";
             DataContext = this; // Review in ChatLobbyPage for details
-            PrivateChatMessages = new ObservableCollection<string>(); //Testing chat messages
-            testPrivateUsers = new ObservableCollection<string>(); //Testing users
-
-            testPrivateUsers.Add("Joe");
-            testPrivateUsers.Add("Bob");
-
-            PrivateChatMessages.Add("Joe: Hello!");
-            PrivateChatMessages.Add("Joe: Finished the assignment yet?");
+            RefreshPrivateMessage();
         }
-
 
         /*
          * User send message button, takes input from box and saves into collection
          */
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            string message = $"{_username}: {UserInputBox.Text}";
-            PrivateChatMessages.Add(message);
+            string message = UserInputBox.Text;
+            _client.SendMessage(_lobbyName, _username, message, true);
+            RefreshPrivateMessage(); //May remove as it helps auto refresh chat
             UserInputBox.Clear();
+        }
+
+        /*
+         * KeyDown method to allow Enter key to be used to send message
+         * instead of button click directly
+         */
+        private void UserInputBox_KeyDown(object sender, KeyEventArgs key)
+        {
+            if (key.Key == Key.Enter)
+            {
+                SendMessageButton_Click(sender, key);
+            }
         }
 
         /*
@@ -65,9 +69,7 @@ namespace GameLobbyClient
          */
         private void PrivateMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            string message = $"{_username}: {UserInputBox.Text}";
-            PrivateChatMessages.Add(message);
-            UserInputBox.Clear();
+            MessageBox.Show("Error: Already in private messages.");
         }
 
         /*
@@ -75,6 +77,7 @@ namespace GameLobbyClient
          */
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
+            _client.LeaveRoom(_lobbyName, _username, true);
             _client.Logout(_username);
             LoginPage loginPage = new LoginPage(_client);
             NavigationService.Navigate(loginPage);
@@ -85,7 +88,27 @@ namespace GameLobbyClient
          */
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
+            _client.LeaveRoom(_lobbyName, _username, true);
             NavigationService.GoBack();
+        }
+
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshPrivateMessage();
+            MessageBox.Show("Lobby refreshed!"); //Delete this later, just emphasizing the refresh
+        }
+
+        /*
+         * Simple refresh method that obtains the lists and sets the item sources for
+         * both boxes.
+         */
+        private void RefreshPrivateMessage()
+        {
+            var messages = _client.GetRoomMessages(_lobbyName, true);
+            var users = _client.GetRoomUsers(_lobbyName, true);
+
+            ChatHistoryBox.ItemsSource = messages;
+            UserListBox.ItemsSource = users;
         }
     }
 }

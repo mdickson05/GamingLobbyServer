@@ -21,8 +21,8 @@ namespace GameLobbyClient
     /// </summary>
     public partial class PrivateMessagePage : Page
     {
-        public ObservableCollection<string> ChatMessages { get; set; }
-        public ObservableCollection<string> testUsers { get; set; }
+        public ObservableCollection<string> PrivateChatMessages { get; set; }
+        public ObservableCollection<string> testPrivateUsers { get; set; }
 
         /*
          * Might take in person object
@@ -35,14 +35,14 @@ namespace GameLobbyClient
             InitializeComponent();
             PrivateNameBlock.Text = userName;
             DataContext = this; // Review in ChatLobbyPage for details
-            ChatMessages = new ObservableCollection<string>(); //Testing chat messages
-            testUsers = new ObservableCollection<string>(); //Testing users
+            PrivateChatMessages = new ObservableCollection<string>(); //Testing chat messages
+            testPrivateUsers = new ObservableCollection<string>(); //Testing users
 
-            testUsers.Add("Joe");
-            testUsers.Add("Bob");
+            testPrivateUsers.Add("Joe");
+            testPrivateUsers.Add("Bob");
 
-            ChatMessages.Add("Joe: Hello!");
-            ChatMessages.Add("Joe: Finished the assignment yet?");
+            PrivateChatMessages.Add("Joe: Hello!");
+            PrivateChatMessages.Add("Joe: Finished the assignment yet?");
         }
 
 
@@ -51,8 +51,8 @@ namespace GameLobbyClient
          */
         private void SendMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            string message = $"{testUsers[0]}: {UserInputBox.Text}";
-            ChatMessages.Add(message);
+            string message = $"{testPrivateUsers[0]}: {UserInputBox.Text}";
+            PrivateChatMessages.Add(message);
             UserInputBox.Clear();
         }
 
@@ -62,8 +62,8 @@ namespace GameLobbyClient
          */
         private void PrivateMessageButton_Click(object sender, RoutedEventArgs e)
         {
-            string message = $"{testUsers[0]}: {UserInputBox.Text}";
-            ChatMessages.Add(message);
+            string message = $"{testPrivateUsers[0]}: {UserInputBox.Text}";
+            PrivateChatMessages.Add(message);
             UserInputBox.Clear();
         }
 
@@ -74,6 +74,14 @@ namespace GameLobbyClient
         {
             LoginPage loginPage = new LoginPage();
             NavigationService.Navigate(loginPage);
+        }
+
+        /*
+         * Simple back button to return to ChatLobbyPage
+         */
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            NavigationService.GoBack();
         }
     }
 }

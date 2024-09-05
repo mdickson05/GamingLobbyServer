@@ -28,7 +28,7 @@
         <TextBlock Name="LobbyNameBlock" Grid.Row="0" Grid.ColumnSpan="2" Margin="10" Text="Lobby Name"/>
 
         <!-- User List: Uses binding to set to particular object/s-->
-        <ListBox Name="UserListBox" Grid.Row="1" Grid.Column="0" ItemsSource="{Binding testUsers}" Margin="10">
+        <ListBox Name="UserListBox" Grid.Row="1" Grid.Column="0" Margin="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Button Content="{Binding}" Width="150" Click="PrivateMessageButton_Click" />
@@ -37,7 +37,7 @@
         </ListBox>
 
         <!-- Chat History: Uses binding to set for particular object/s-->
-        <ListBox Name="ChatHistoryBox" Grid.Row="1" Grid.Column="1" ItemsSource="{Binding ChatMessages}" Margin="10">
+        <ListBox Name="ChatHistoryBox" Grid.Row="1" Grid.Column="1" Margin="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
@@ -45,13 +45,13 @@
             </ListBox.ItemTemplate>
         </ListBox>
 
-        <!-- User Input, Send Button, Logout button and Back button-->
+        <!-- User Input, Send Button, Logout button, Back button and Refresh button-->
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
             <Button Name="LogoutButton" Width="50" Content="Logout" Click="LogoutButton_Click"/>
             <Button Name="BackButton" Width="50" Content="Back" Click="BackButton_Click"/>
-            <TextBox Name="UserInputBox" Width="560" Height="30"/>
+            <Button Name="RefreshButton" Content="Refresh" Width="50" Click="RefreshButton_Click"/>
+            <TextBox Name="UserInputBox" Width="510" Height="30"  KeyDown="UserInputBox_KeyDown"/>
             <Button Name="SendMessageButton" Content="Send Message" Width="100" Click="SendMessageButton_Click"/>
-            <Button Name="SendFileButton" Content="Upload File" Width="100" Click="UploadFile_Click"/>
         </StackPanel>
     </Grid>
 </Page>

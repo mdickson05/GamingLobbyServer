@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DataServer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,20 +21,38 @@ namespace GameLobbyClient
     /// </summary>
     public partial class LoginPage : Page
     {
-        public LoginPage()
+        private IGLSInterface _client;
+        public LoginPage(IGLSInterface client)
         {
             InitializeComponent();
+            _client = client;
         }
 
         /* 
          * Takes username from loginbox and passes to MainLobbyPage
-         * CHANGE when classes are implemented
          */
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var username = LoginBox.Text;
-            MainLobbyPage lobbyPage = new MainLobbyPage(username);
-            NavigationService.Navigate(lobbyPage);
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                MessageBox.Show("Please enter a valid username.");
+            }
+            else
+            {
+                _client.CreateUser(username);
+                NavigationService.Navigate(new MainLobbyPage(_client, username));
+            }
+        }
+        /*
+         * Simple keydown handler so on Enter key press it does the login button click
+         */
+        private void LoginBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                LoginButton_Click(sender, e);
+            }
         }
     }
 }

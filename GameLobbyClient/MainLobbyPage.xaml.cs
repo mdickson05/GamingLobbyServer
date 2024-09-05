@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using DataServer;
 
 namespace GameLobbyClient
 {
@@ -24,13 +25,16 @@ namespace GameLobbyClient
         private int lobbyCount = 0;
         //String username temp which may be replaced by class use
         private string userName;
-        public MainLobbyPage(string username)
+
+        private IGLSInterface _client;
+
+        public MainLobbyPage(IGLSInterface client, string username)
         {
             InitializeComponent();
             userName = username;
+            _client = client;
 
-            //Redundant lines for testing
-            UsernameBlock.Text = userName;
+            UsernameBlock.Text = $"Welcome: {userName}";
             UsernameBlock.Visibility = Visibility.Visible;
         }
 
@@ -87,16 +91,34 @@ namespace GameLobbyClient
                 {
                     lobbyButton.Content = lobbyName;
                     lobbyButton.Visibility = Visibility.Visible;
+                    _client.CreateRoom(lobbyName);
                 }
 
                 //Clears LobbyNameBox of previous text
                 LobbyNameBox.Clear();
+                RefreshChatLobby();
             }
         }
 
+        /*
+         * Simple method that allows Enter key press to create lobby
+         */
+        private void LobbyNameBox_KeyDown(object sender, KeyEventArgs key)
+        {
+            if (key.Key == Key.Enter)
+            {
+                CreateLobbyButton_Click(sender, key);
+            }
+        }
+
+        /*
+         * Logs user out and takes them back to LoginPage
+         * Removes their username from UserManager
+         */
         private void LogoutMainLobby_Click(object sender, RoutedEventArgs e)
         {
-            LoginPage loginPage = new LoginPage();
+            _client.Logout(userName);
+            LoginPage loginPage = new LoginPage(_client);
             NavigationService.Navigate(loginPage);
         }
 
@@ -107,32 +129,78 @@ namespace GameLobbyClient
          */
         private void LobbyButtonOne_Click(object sender, RoutedEventArgs e)
         {
-            ChatLobbyPage lobbyOne = new ChatLobbyPage(LobbyButtonOne.Content.ToString());
+            var lobbyName = LobbyButtonOne.Content.ToString();
+            _client.JoinRoom(lobbyName, userName, false);
+            ChatLobbyPage lobbyOne = new ChatLobbyPage(lobbyName, _client, userName);
             NavigationService.Navigate(lobbyOne);
         }
 
         private void LobbyButtonTwo_Click(object sender, RoutedEventArgs e)
         {
-            ChatLobbyPage lobbyTwo = new ChatLobbyPage(LobbyButtonTwo.Content.ToString());
+            var lobbyName = LobbyButtonTwo.Content.ToString();
+            _client.JoinRoom(lobbyName, userName, false);
+            ChatLobbyPage lobbyTwo = new ChatLobbyPage(lobbyName, _client, userName);
             NavigationService.Navigate(lobbyTwo);
         }
 
         private void LobbyButtonThree_Click(object sender, RoutedEventArgs e)
         {
-            ChatLobbyPage lobbyThree = new ChatLobbyPage(LobbyButtonThree.Content.ToString());
+            var lobbyName = LobbyButtonThree.Content.ToString();
+            _client.JoinRoom(lobbyName, userName, false);
+            ChatLobbyPage lobbyThree = new ChatLobbyPage(lobbyName, _client, userName);
             NavigationService.Navigate(lobbyThree);
         }
 
         private void LobbyButtonFour_Click(object sender, RoutedEventArgs e)
         {
-            ChatLobbyPage lobbyFour = new ChatLobbyPage(LobbyButtonFour.Content.ToString());
+            var lobbyName = LobbyButtonFour.Content.ToString();
+            _client.JoinRoom(lobbyName, userName, false);
+            ChatLobbyPage lobbyFour = new ChatLobbyPage(lobbyName, _client, userName);
             NavigationService.Navigate(lobbyFour);
         }
 
         private void LobbyButtonFive_Click(object sender, RoutedEventArgs e)
         {
-            ChatLobbyPage lobbyFive = new ChatLobbyPage(LobbyButtonFive.Content.ToString());
+            var lobbyName = LobbyButtonFive.Content.ToString();
+            _client.JoinRoom(lobbyName, userName, false);
+            ChatLobbyPage lobbyFive = new ChatLobbyPage(lobbyName, _client, userName);
             NavigationService.Navigate(lobbyFive);
+        }
+
+        /*
+         * Simple refresh button method 
+         */
+        private void RefreshButton_Click(object sender, RoutedEventArgs e)
+        {
+            RefreshChatLobby();
+            MessageBox.Show("Lobby refreshed!"); //Delete this later, just emphasizing the refresh
+        }
+
+        /*
+         * Simple refresh method that refreshes LobbyButtons updating them based
+         * on server information.
+         */
+        private void RefreshChatLobby()
+        {
+            var lobbies = _client.GetAvailableLobbies();
+            UpdateLobbyButtons(lobbies);
+        }
+
+        private void UpdateLobbyButtons(List<string> lobbies)
+        {
+            List<Button> lobbyButtons = new List<Button> { LobbyButtonOne, LobbyButtonTwo, LobbyButtonThree, LobbyButtonFour, LobbyButtonFive };
+
+            foreach (var button in lobbyButtons)
+            {
+                button.Visibility = Visibility.Collapsed;
+                button.Content = string.Empty;
+            }
+
+            for (int i = 0; i < lobbies.Count && i < lobbyButtons.Count; i++)
+            {
+                lobbyButtons[i].Content = lobbies[i];
+                lobbyButtons[i].Visibility = Visibility.Visible;
+            }
         }
     }
 }

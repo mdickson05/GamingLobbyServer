@@ -20,6 +20,8 @@ namespace GameLobbyClient
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+
+    public IGLSInterface foob;
     public partial class MainWindow : Window
     {
         private IGLSInterface foob;
@@ -31,7 +33,6 @@ namespace GameLobbyClient
         public MainWindow()
         {
             InitializeComponent();
-
             //Creating client service
             ChannelFactory<DataServer.IGLSInterface> foobFactory;
             NetTcpBinding tcp = new NetTcpBinding();

@@ -21,7 +21,6 @@ namespace GameLobbyClient
     /// Interaction logic for MainWindow.xaml
     /// </summary>
 
-    public IGLSInterface foob;
     public partial class MainWindow : Window
     {
         private IGLSInterface foob;

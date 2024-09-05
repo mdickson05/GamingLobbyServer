@@ -52,7 +52,6 @@
             <Button Name="RefreshButton" Content="Refresh" Width="50" Click="RefreshButton_Click"/>
             <TextBox Name="UserInputBox" Width="510" Height="30"  KeyDown="UserInputBox_KeyDown"/>
             <Button Name="SendMessageButton" Content="Send Message" Width="100" Click="SendMessageButton_Click"/>
-            <Button Name="SendFileButton" Content="Upload File" Width="100" Click="UploadFile_Click"/>
         </StackPanel>
     </Grid>
 </Page>

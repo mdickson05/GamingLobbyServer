@@ -90,7 +90,10 @@ namespace GameLobbyClient
             {
                 MessageBox.Show("Please enter a lobby name.");
             }
-
+            else if (_client.GetAvailableLobbies().Contains(lobbyName))
+            {
+                MessageBox.Show($"Lobby '{lobbyName}' already exists!");
+            }
             //Handles making lobbies visible based on count
             else
             {
@@ -128,9 +131,9 @@ namespace GameLobbyClient
                     _client.CreateRoom(lobbyName);
                 }
 
-                //Clears LobbyNameBox of previous text
+                // Clears LobbyNameBox of previous text
                 LobbyNameBox.Clear();
-                RefreshChatLobby();
+                RefreshChatLobby(); // Could remove?
             }
         }
 
@@ -206,14 +209,25 @@ namespace GameLobbyClient
          */
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            RefreshChatLobby();
-            MessageBox.Show("Lobby refreshed!"); //Delete this later, just emphasizing the refresh
+            Task.Run(async () =>
+            {
+                await UpdateLobbyList();
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show("Lobby refreshed!");
+                });
+            });
+            
+            // RefreshChatLobby();
+            // MessageBox.Show("Lobby refreshed!"); //Delete this later, just emphasizing the refresh
         }
 
         /*
          * Simple refresh method that refreshes LobbyButtons updating them based
          * on server information.
          */
+
+        // Could remove?
         private void RefreshChatLobby()
         {
             var lobbies = _client.GetAvailableLobbies();

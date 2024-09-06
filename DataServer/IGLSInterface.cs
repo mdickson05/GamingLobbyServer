@@ -17,6 +17,12 @@ namespace DataServer
         [OperationContract]
         void CreateUser(string username);
         [OperationContract]
+        bool AlreadyLoggedIn(string username);
+        [OperationContract]
+        bool Login(String username);
+        [OperationContract]
+        bool AlreadyExists(String username);
+        [OperationContract]
         void Logout(string username);
         [OperationContract]
         void CreateRoom(string roomname);

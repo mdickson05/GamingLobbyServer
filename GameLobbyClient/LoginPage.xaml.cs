@@ -38,6 +38,21 @@ namespace GameLobbyClient
             {
                 MessageBox.Show("Please enter a valid username.");
             }
+            else if (_client.AlreadyLoggedIn(username))
+            {
+                MessageBox.Show($"User '{username}' logged in elsewhere.");
+            }
+            else if (_client.AlreadyExists(username))
+            {
+                if (_client.Login(username))
+                {
+                    NavigationService.Navigate(new MainLobbyPage(_client, username));
+                }
+                else
+                {
+                    MessageBox.Show("Login failed. Please try again.");
+                }
+            }
             else
             {
                 _client.CreateUser(username);

@@ -37,7 +37,70 @@ namespace GameLobbyClient
             _lobbyName = privateLobbyName;
             PrivateNameBlock.Text = $"PM: {privateLobbyName}";
             DataContext = this; // Review in ChatLobbyPage for details
-            RefreshPrivateMessage();
+            // RefreshPrivateMessage();
+
+            InitializeBackgroundTasks();
+        }
+
+        private void InitializeBackgroundTasks()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await UpdateMessages();
+                    await Task.Delay(1000); // Update every second
+                }
+            });
+
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await UpdateUserList();
+                    await Task.Delay(1000); // Update every second
+                }
+            });
+        }
+
+        private async Task UpdateMessages()
+        {
+            try
+            {
+                var messages = await Task.Run(() => _client.GetRoomMessages(_lobbyName, true));
+                
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    ChatHistoryBox.ItemsSource = messages;
+                });
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show($"Error updating messages: {ex.Message}");
+                });
+            }
+        }
+
+
+        private async Task UpdateUserList()
+        {
+            try
+            {
+                var users = await Task.Run(() => _client.GetRoomUsers(_lobbyName, true));
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    UserListBox.ItemsSource = users;
+                });
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show($"Error updating user list: {ex.Message}");
+                });
+            }
         }
 
         /*
@@ -47,7 +110,7 @@ namespace GameLobbyClient
         {
             string message = UserInputBox.Text;
             _client.SendMessage(_lobbyName, _username, message, true);
-            RefreshPrivateMessage(); //May remove as it helps auto refresh chat
+            RefreshPrivateMessage(); // May remove as it helps auto refresh chat
             UserInputBox.Clear();
         }
 
@@ -94,8 +157,15 @@ namespace GameLobbyClient
 
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            RefreshPrivateMessage();
-            MessageBox.Show("Lobby refreshed!"); //Delete this later, just emphasizing the refresh
+            Task.Run(async () =>
+            {
+                await UpdateMessages();
+                await UpdateUserList();
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show("Lobby refreshed!"); // To delete?
+                });
+            });
         }
 
         /*

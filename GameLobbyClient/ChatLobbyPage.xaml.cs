@@ -1,24 +1,9 @@
 ﻿using DataServer;
-using System;
-﻿using Microsoft.Win32;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GameLobbyClient
 {
@@ -69,7 +54,7 @@ namespace GameLobbyClient
          */
         private void UserInputBox_KeyDown(object sender, KeyEventArgs key)
         {
-            if(key.Key == Key.Enter)
+            if (key.Key == Key.Enter)
             {
                 SendMessageButton_Click(sender, key);
             }
@@ -103,7 +88,7 @@ namespace GameLobbyClient
          */
         private string makePrivateChatName(string userNameOne, string userNameTwo)
         {
-            var users = new List<string> { userNameOne, userNameTwo};
+            var users = new List<string> { userNameOne, userNameTwo };
             users.Sort();
             return string.Join("", users);
         }
@@ -124,7 +109,7 @@ namespace GameLobbyClient
             _client.LeaveRoom(_lobbyName, _username, false);
             NavigationService.GoBack();
         }
-        
+
         /*
          * Simple refresh button pulls information from server
          */

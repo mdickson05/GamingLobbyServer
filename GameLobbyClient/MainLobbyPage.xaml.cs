@@ -36,7 +36,41 @@ namespace GameLobbyClient
 
             UsernameBlock.Text = $"Welcome: {userName}";
             UsernameBlock.Visibility = Visibility.Visible;
+            
+            InitializeBackgroundTasks();
         }
+
+        private void InitializeBackgroundTasks()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await UpdateLobbyList();
+                    await Task.Delay(5000);
+                }
+            });
+        }
+
+        private async Task UpdateLobbyList()
+        {
+            try
+            {
+                var lobbies = await Task.Run(() => _client.GetAvailableLobbies());
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    UpdateLobbyButtons(lobbies);
+                });
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show($"Error updating lobby list: {ex.Message}");
+                });
+            }
+        }
+
 
         /* 
          * Create lobby button

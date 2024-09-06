@@ -1,5 +1,7 @@
 ﻿using DataServer;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -32,10 +34,70 @@ namespace GameLobbyClient
             _username = username;
             _lobbyName = lobbyName;
             LobbyNameBlock.Text = _lobbyName; //Sets lobby name
-            RefreshChatLobby();
+
+            InitializeBackgroundTasks();
         }
 
+        private void InitializeBackgroundTasks()
+        {
+            Task.Run(async () => 
+            {
+                while (true)
+                {
+                    await UpdateMessages();
+                    await Task.Delay(1000); // Update every second
+                }
+            });
 
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await UpdateUserList();
+                    await Task.Delay(5000); // Update every second
+                }
+            });
+
+
+        }
+
+        private async Task UpdateMessages()
+        {
+            try
+            {
+                var messages = await Task.Run(() => _client.GetRoomMessages(_lobbyName, false));
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    ChatHistoryBox.ItemsSource = messages;
+                });
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show($"Error updating messages: {ex.Message}");
+                });
+            }
+        }
+
+        private async Task UpdateUserList()
+        {
+            try
+            {
+                var users = await Task.Run(() => _client.GetRoomUsers(_lobbyName, false));
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    UserListBox.ItemsSource = users;
+                });
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show($"Error updating user list: {ex.Message}");
+                });
+            }
+        }
 
         /*
          * User send message button, takes input from box and saves into collection
@@ -115,8 +177,15 @@ namespace GameLobbyClient
          */
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            RefreshChatLobby();
-            MessageBox.Show("Lobby refreshed!"); //Delete this later, just emphasizing the refresh
+            Task.Run(async () =>
+            {
+                await UpdateMessages();
+                await UpdateUserList();
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show("Lobby refreshed!"); // Delete later?
+                });
+            });
         }
 
         /*

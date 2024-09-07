@@ -21,6 +21,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Net;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text.RegularExpressions;
 
 namespace GameLobbyClient
 {
@@ -153,22 +155,25 @@ namespace GameLobbyClient
                 ChatMessage chatMessage = new ChatMessage();
 
                 // Check if the message contains a file link or is a regular text message
-                if (message.Contains(".txt") || message.Contains(".PNG") || message.Contains(".JPG"))
+                if (message.Contains(".txt") || message.Contains(".png") || message.Contains(".jpg"))
                 {
-                    // Treat the message as a hyperlinku
-                    string[] temp = message.Split();
-                    string username = temp[0];
                     string link = "";
-                    for(int i = 0; i <  temp.Length; i++)
+                    string pattern = @"([a-zA-Z]:\\|\\\\|\/)([^\s\\/]+[\\/])*[^\s\\/]+\.\w+";
+                    Regex fileRegex = new Regex(pattern);
+
+
+                    // Find the first match in the input string
+                    Match match = fileRegex.Match(message);
+                    string username = message.Substring(0, match.Index).Trim();
+
+                    // Check if a file path was found
+                    if (match.Success)
                     {
-                        //Skip the first line
-                        if (i != 0)
-                        {
-                            link += temp[i] + " ";
-                        }
-                    }   
+                        link = match.Value;
+                    }
+
                     chatMessage.Hyperlink = link;
-                    chatMessage.MessageText = username + ": ";
+                    chatMessage.MessageText = username;
                 }
                 else
                 {
@@ -194,7 +199,7 @@ namespace GameLobbyClient
         private void UploadFileButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.PNG; *.JPG)|*.PNG; *.JPG";
+            openFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.PNG; *.JPG)|*.png; *.jpg";
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -208,11 +213,11 @@ namespace GameLobbyClient
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             // Open the link in the default browser
-            string pathname = e.Uri.ToString();
+            string pathname = e.Uri.AbsolutePath;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FileName = System.IO.Path.GetFileName(pathname); // Default filename is the same as the source file
-            saveFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.PNG; *.JPG)|*.PNG; *.JPG";  // Can adjust filters for specific file types
+            saveFileDialog.Filter = "Text files(*.txt) | *.txt | Image files(*.PNG; *.JPG)| *.png; *.jpg";  // Can adjust filters for specific file types
 
             // If the user selects a location and clicks Save
             if (saveFileDialog.ShowDialog() == true)

@@ -6,6 +6,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Navigation;
+using System.Windows.Shapes;
+using System.Diagnostics;
+using System.Net;
 
 namespace GameLobbyClient
 {
@@ -60,7 +63,7 @@ namespace GameLobbyClient
 
 
         }
-
+        
         private async Task UpdateMessages()
         {
             try
@@ -152,7 +155,7 @@ namespace GameLobbyClient
         {
             var users = new List<string> { userNameOne, userNameTwo };
             users.Sort();
-            return string.Join("", users);
+            return string.Join("-", users);
         }
 
         /*
@@ -194,11 +197,113 @@ namespace GameLobbyClient
          */
         private void RefreshChatLobby()
         {
+            // Retrieve messages and users from the client
             var messages = _client.GetRoomMessages(_lobbyName, false);
             var users = _client.GetRoomUsers(_lobbyName, false);
 
-            ChatHistoryBox.ItemsSource = messages;
-            UserListBox.ItemsSource = users;
+            // Create a list to hold the parsed ChatMessage objects
+            var parsedMessages = new List<ChatMessage>();
+
+            // Iterate through each message and create ChatMessage objects
+            foreach (var message in messages)
+            {
+                ChatMessage chatMessage = new ChatMessage();
+
+                // Check if the message contains a file link or is a regular text message
+                if (message.Contains(".txt") || message.Contains(".PNG") || message.Contains(".JPG"))
+                {
+                    // Treat the message as a hyperlinku
+                    string[] temp = message.Split();
+                    string username = temp[0];
+                    string link = "";
+                    for(int i = 0; i <  temp.Length; i++)
+                    {
+                        //Skip the first line
+                        if (i != 0)
+                        {
+                            link += temp[i] + " ";
+                        }
+                    }   
+                    chatMessage.Hyperlink = link;
+                    chatMessage.MessageText = username + ": ";
+                }
+                else
+                {
+                    // Treat the message as a normal message
+                    chatMessage.MessageText = message;
+                }
+
+                // Add the parsed message to the list
+                parsedMessages.Add(chatMessage);
+            }
+
+            // Update the UI by setting the ItemsSource for the chat history and user list
+            ChatHistoryBox.ItemsSource = parsedMessages;  
+            UserListBox.ItemsSource = users;                     
+        }
+
+        public class ChatMessage
+        {
+            public string MessageText { get; set; }
+            public string Hyperlink { get; set; }
+        }
+
+        private void UploadFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.PNG; *.JPG)|*.PNG; *.JPG";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string fileName = openFileDialog.FileName;
+                _client.SendMessage(_lobbyName, _username, fileName, false);
+                RefreshChatLobby();
+            }
+        }
+
+        // Event handler for hyperlinks
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            // Open the link in the default browser
+            string pathname = e.Uri.ToString();
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = System.IO.Path.GetFileName(pathname); // Default filename is the same as the source file
+            saveFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.PNG; *.JPG)|*.PNG; *.JPG";  // Can adjust filters for specific file types
+
+            // If the user selects a location and clicks Save
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string destinationPath = saveFileDialog.FileName;
+
+                try
+                {
+                    if (pathname.StartsWith("http") || pathname.StartsWith("ftp"))
+                    {
+                        // If it's a web URL, download the file
+                        using (WebClient webClient = new WebClient())
+                        {
+                            webClient.DownloadFile(pathname, destinationPath);
+                        }
+                    }
+                    else if (File.Exists(pathname))
+                    {
+                        // If it's a local file path, copy it to the destination
+                        File.Copy(pathname, destinationPath, true);
+                    }
+
+                    MessageBox.Show("File downloaded successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                    System.Diagnostics.Process.Start(destinationPath);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while downloading the file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+            
+
+            // Prevent further navigation
+            e.Handled = true;
         }
     }
 }

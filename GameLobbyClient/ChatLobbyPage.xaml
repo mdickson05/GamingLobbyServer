@@ -40,28 +40,18 @@
         <ListBox Name="ChatHistoryBox" Grid.Row="1" Grid.Column="1" Margin="10">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Name="NormalMessage" Text="{Binding MessageText}" TextWrapping="Wrap">
-                        <Run Text="{Binding HyperLink}" />
-                        <Hyperlink NavigateUri="{Binding Hyperlink}" RequestNavigate="Hyperlink_RequestNavigate">
-                            <TextBlock Text="{Binding Hyperlink}" />
-                        </Hyperlink>
-                     </TextBlock>
+                    <TextBlock Text="{Binding}" TextWrapping="Wrap"/>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
-        
-       
 
         <!-- User Input, Send Button, Logout button, Back button and Refresh button-->
         <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="10">
             <Button Name="LogoutButton" Width="50" Content="Logout" Click="LogoutButton_Click"/>
             <Button Name="BackButton" Width="50" Content="Back" Click="BackButton_Click"/>
             <Button Name="RefreshButton" Content="Refresh" Width="50" Click="RefreshButton_Click"/>
-            <TextBox Name="UserInputBox" Width="459" Height="30"  KeyDown="UserInputBox_KeyDown"/>
+            <TextBox Name="UserInputBox" Width="510" Height="30"  KeyDown="UserInputBox_KeyDown"/>
             <Button Name="SendMessageButton" Content="Send Message" Width="100" Click="SendMessageButton_Click"/>
-            <Button Name="SendFileButton" Content="Upload File" Width="70" Click="UploadFileButton_Click"/>
         </StackPanel>
-       
     </Grid>
 </Page>

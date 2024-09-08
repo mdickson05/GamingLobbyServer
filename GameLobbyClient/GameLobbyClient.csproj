@@ -129,6 +129,10 @@
       <Project>{a91c72a8-190d-41c5-96c8-ee4208a076ff}</Project>
       <Name>DataServer</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Message\Messages.csproj">
+      <Project>{ae90ad1c-4978-4171-b011-8033047c262c}</Project>
+      <Name>Messages</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

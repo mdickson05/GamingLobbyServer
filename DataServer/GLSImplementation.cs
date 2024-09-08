@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using Users;
+using Messages;
 
 namespace DataServer
 {
@@ -153,6 +154,7 @@ namespace DataServer
                 {
                     string formatMessage = $"{username}: {message}";
                     room.Messages.Add(formatMessage);
+                    RoomManager.ParseRoomMessage(roomname, formatMessage, isPrivate);
                 }
             }
             else
@@ -162,8 +164,14 @@ namespace DataServer
                 {
                     string formatMessage = $"{username}: {message}";
                     room.Messages.Add(formatMessage);
+                    RoomManager.ParseRoomMessage(roomname, formatMessage, isPrivate);
                 }
             }
+        }
+
+        public List<Message> GetParsedRoomMessages(string roomName, bool isPrivate)
+        {
+            return RoomManager.GetParsedRoomMessages(roomName, isPrivate);
         }
     }
 }

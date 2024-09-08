@@ -109,48 +109,8 @@ namespace GameLobbyClient
          */
         private void RefreshPrivateMessage()
         {
-            var messages = _client.GetRoomMessages(_lobbyName, true);
+            var messages = _client.GetParsedRoomMessages(_lobbyName, true);
             var users = _client.GetRoomUsers(_lobbyName, true);
-
-            // Create a list to hold the parsed ChatMessage objects
-            var parsedMessages = new List<ChatMessage>();
-
-            // Iterate through each message and create ChatMessage objects
-            foreach (var message in messages)
-            {
-                ChatMessage chatMessage = new ChatMessage();
-
-                // Check if the message contains a file link or is a regular text message
-                // Check if the message contains a file link or is a regular text message
-                if (message.Contains(".txt") || message.Contains(".png") || message.Contains(".jpg"))
-                {
-                    string link = "";
-                    string pattern = @"([a-zA-Z]:\\|\\\\|\/)([^\s\\/]+[\\/])*[^\s\\/]+\.\w+";
-                    Regex fileRegex = new Regex(pattern);
-
-
-                    // Find the first match in the input string
-                    Match match = fileRegex.Match(message);
-                    string username = message.Substring(0, match.Index).Trim();
-
-                    // Check if a file path was found
-                    if (match.Success)
-                    {
-                        link = match.Value;
-                    }
-
-                    chatMessage.Hyperlink = link;
-                    chatMessage.MessageText = username;
-                }
-                else
-                {
-                    // Treat the message as a normal message
-                    chatMessage.MessageText = message;
-                }
-
-                // Add the parsed message to the list
-                parsedMessages.Add(chatMessage);
-            }
 
             ChatHistoryBox.ItemsSource = messages;
             UserListBox.ItemsSource = users;
@@ -164,7 +124,7 @@ namespace GameLobbyClient
             if (openFileDialog.ShowDialog() == true)
             {
                 string fileName = openFileDialog.FileName;
-                _client.SendMessage(_lobbyName, _username, fileName, false);
+                _client.SendMessage(_lobbyName, _username, fileName, true);
                 RefreshPrivateMessage();
             }
         }
@@ -174,7 +134,7 @@ namespace GameLobbyClient
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             // Open the link in the default browser
-            string pathname = e.Uri.ToString();
+            string pathname = e.Uri.AbsolutePath;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FileName = System.IO.Path.GetFileName(pathname); // Default filename is the same as the source file
@@ -201,12 +161,13 @@ namespace GameLobbyClient
                         File.Copy(pathname, destinationPath, true);
                     }
 
-                    MessageBox.Show("File downloaded successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                     System.Diagnostics.Process.Start(destinationPath);
+                    MessageBox.Show("File downloaded successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show($"An error occurred while downloading the file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show($"An error occurred while downloading the file: {ex.Message} {destinationPath}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
 

@@ -156,7 +156,7 @@ namespace GameLobbyClient
                 string privateLobbyName = makePrivateChatName(_username, userMessageName); //Created a private lobby name of current user and who they pm concatted
                 _client.CreatePrivateRoom(privateLobbyName);
                 _client.JoinRoom(privateLobbyName, _username, true);
-                PrivateMessagePage privateMessagePage = new PrivateMessagePage(_username, privateLobbyName, _client);
+                PrivateMessagePage privateMessagePage = new PrivateMessagePage(_username, privateLobbyName, userMessageName, _client);
                 NavigationService.Navigate(privateMessagePage);
             }
         }

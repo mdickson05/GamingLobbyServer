@@ -34,13 +34,13 @@ namespace GameLobbyClient
          * Might take in person object
          * Will make similar to ChatLobbyPage for now
          */
-        public PrivateMessagePage(string username, string privateLobbyName, IGLSInterface client)
+        public PrivateMessagePage(string username, string privateLobbyName, string sendingTo, IGLSInterface client)
         {
             InitializeComponent();
             _client = client;
             _username = username;
             _lobbyName = privateLobbyName;
-            PrivateNameBlock.Text = $"PM: {privateLobbyName}";
+            PrivateNameBlock.Text = $"In private message with: {sendingTo}";
             DataContext = this; // Review in ChatLobbyPage for details
                                 
             // RefreshPrivateMessage();

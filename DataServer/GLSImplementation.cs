@@ -1,10 +1,10 @@
-﻿using Rooms;
+﻿using Messages;
+using Rooms;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.ServiceModel;
 using Users;
-using Messages;
 
 namespace DataServer
 {
@@ -112,14 +112,14 @@ namespace DataServer
          */
         public List<string> GetRoomUsers(string roomname, Boolean isPrivate)
         {
-            if(isPrivate)
+            if (isPrivate)
             {
                 return RoomManager.GetPrivateRoomByName(roomname)?.Users ?? new List<string>();
             }
             else
             {
                 return RoomManager.GetRoomByName(roomname)?.Users ?? new List<string>();
-            } 
+            }
         }
 
         /*
@@ -129,7 +129,7 @@ namespace DataServer
          */
         public List<string> GetRoomMessages(string roomname, Boolean isPrivate)
         {
-            if(isPrivate)
+            if (isPrivate)
             {
                 return RoomManager.GetPrivateRoomByName(roomname)?.Messages ?? new List<string>();
             }
@@ -173,7 +173,7 @@ namespace DataServer
                 }
             }
             else
-            { 
+            {
                 Room room = RoomManager.GetRoomByName(roomname);
                 if (room != null)
                 {

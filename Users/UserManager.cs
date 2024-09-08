@@ -7,11 +7,18 @@ namespace Users
     // Class used to manage users without directly accessing components
     {
         private Dictionary<string, User> Users { get; set; }
+        private List<string> LoggedInUsers { get; set; }
 
         public UserManager()
         {
             // statically call UserGenerator to generate the five users needed to populate a server
             this.Users = UserGenerator.GenerateUsers();
+            this.LoggedInUsers = new List<string>();
+        }
+
+        public bool LoggedInElsewhere(String username)
+        {
+            return LoggedInUsers.Contains(username);
         }
 
         // returns a boolean just in case extra error checking is required down the track
@@ -23,19 +30,26 @@ namespace Users
             }
 
             User User = new User(username);
-
-
             Users.Add(username, User);
+            Login(username);
+
             LogDictionaryState();
             return true;
         }
-        // The function calling Logout should check whether the user calling it is actually logged in
+
+        public bool Login(string username)
+        {
+            if (Users.ContainsKey(username) && !LoggedInUsers.Contains(username))
+            {
+                LoggedInUsers.Add(username);
+                return true;
+            }
+            return false;
+        }
+
         public void Logout(string username)
         {
-            if (Users.ContainsKey(username))
-            {
-                Users.Remove(username);
-            }
+            LoggedInUsers.Remove(username);
         }
 
         public void AddToRoomsList(string roomname, string username)
@@ -50,16 +64,19 @@ namespace Users
             user.Rooms.Remove(roomname);
         }
 
-
+        public bool UserAlreadyExists(String username)
+        {
+            return Users.ContainsKey(username);
+        }
 
         public bool InRoom(string roomname, string username)
         {
-            if(!Users.ContainsKey(username))
+            if (!Users.ContainsKey(username))
             {
                 Console.WriteLine($"Error: User '{username}' not found in Users dictionary.");
                 return false;
             }
-            
+
             User user = Users[username];
 
             List<string> userRoomsList = user.Rooms;

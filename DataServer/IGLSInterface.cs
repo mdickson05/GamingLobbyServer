@@ -42,6 +42,12 @@ namespace DataServer
         void SendMessage(string roomname, string username, string message, Boolean isPrivate);
         [OperationContract]
         List<Message> GetParsedRoomMessages(string roomName, bool isPrivate);
+        [OperationContract]
+        bool AlreadyLoggedIn(string username);
+        [OperationContract]
+        bool Login(String username);
+        [OperationContract]
+        bool AlreadyExists(String username);
 
     }
 }

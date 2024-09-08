@@ -21,6 +21,21 @@ namespace DataServer
             UserManager.CreateNewUser(username);
         }
 
+        public bool AlreadyLoggedIn(String username)
+        {
+            return UserManager.LoggedInElsewhere(username);
+        }
+
+        public bool Login(string username)
+        {
+            return UserManager.Login(username);
+        }
+
+        public bool AlreadyExists(string username)
+        {
+            return UserManager.UserAlreadyExists(username);
+        }
+
         public void Logout(string username)
         {
             UserManager.Logout(username);

@@ -152,35 +152,8 @@ namespace GameLobbyClient
             // Iterate through each message and create ChatMessage objects
             foreach (var message in messages)
             {
-                ChatMessage chatMessage = new ChatMessage();
-
-                // Check if the message contains a file link or is a regular text message
-                if (message.Contains(".txt") || message.Contains(".png") || message.Contains(".jpg"))
-                {
-                    string link = "";
-                    string pattern = @"([a-zA-Z]:\\|\\\\|\/)([^\s\\/]+[\\/])*[^\s\\/]+\.\w+";
-                    Regex fileRegex = new Regex(pattern);
-
-
-                    // Find the first match in the input string
-                    Match match = fileRegex.Match(message);
-                    string username = message.Substring(0, match.Index).Trim();
-
-                    // Check if a file path was found
-                    if (match.Success)
-                    {
-                        link = match.Value;
-                    }
-
-                    chatMessage.Hyperlink = link;
-                    chatMessage.MessageText = username;
-                }
-                else
-                {
-                    // Treat the message as a normal message
-                    chatMessage.MessageText = message;
-                }
-
+                // Parse message string
+                ChatMessage chatMessage = ParseChatMessage(message);
                 // Add the parsed message to the list
                 parsedMessages.Add(chatMessage);
             }
@@ -194,6 +167,39 @@ namespace GameLobbyClient
         {
             public string MessageText { get; set; }
             public string Hyperlink { get; set; }
+        }
+
+        private ChatMessage ParseChatMessage(string message)
+        {
+            ChatMessage chatMessage = new ChatMessage();
+
+            // Check if the message contains a file link or is a regular text message
+            if (message.Contains(".txt") || message.Contains(".png") || message.Contains(".jpg"))
+            {
+                string link = "";
+                string pattern = @"([a-zA-Z]:\\|\\\\|\/)([^\s\\/]+[\\/])*[^\s\\/]+\.\w+";
+                Regex fileRegex = new Regex(pattern);
+
+
+                // Find the first match in the input string
+                Match match = fileRegex.Match(message);
+                string username = message.Substring(0, match.Index).Trim();
+
+                // Check if a file path was found
+                if (match.Success)
+                {
+                    link = match.Value;
+                }
+
+                chatMessage.Hyperlink = link;
+                chatMessage.MessageText = username;
+            }
+            else
+            {
+                // Treat the message as a normal message
+                chatMessage.MessageText = message;
+            }
+            return chatMessage;
         }
 
         private void UploadFileButton_Click(object sender, RoutedEventArgs e)

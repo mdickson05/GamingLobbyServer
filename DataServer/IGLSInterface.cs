@@ -7,6 +7,7 @@ using System.ServiceModel.Description;
 using System.Text;
 using System.Threading.Tasks;
 using Users;
+using Messages;
 
 namespace DataServer
 {
@@ -39,6 +40,8 @@ namespace DataServer
         List<string> GetAvailablePrivateLobbies();
         [OperationContract]
         void SendMessage(string roomname, string username, string message, Boolean isPrivate);
+        [OperationContract]
+        List<Message> GetParsedRoomMessages(string roomName, bool isPrivate);
 
     }
 }

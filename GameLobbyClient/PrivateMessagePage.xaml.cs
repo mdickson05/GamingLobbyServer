@@ -1,9 +1,13 @@
 ﻿using DataServer;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static GameLobbyClient.ChatLobbyPage;
 
 namespace GameLobbyClient
 {
@@ -104,11 +109,72 @@ namespace GameLobbyClient
          */
         private void RefreshPrivateMessage()
         {
-            var messages = _client.GetRoomMessages(_lobbyName, true);
+            var messages = _client.GetParsedRoomMessages(_lobbyName, true);
             var users = _client.GetRoomUsers(_lobbyName, true);
 
             ChatHistoryBox.ItemsSource = messages;
             UserListBox.ItemsSource = users;
         }
+
+        private void UploadFileButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.PNG; *.JPG)|*.PNG; *.JPG";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                string fileName = openFileDialog.FileName;
+                _client.SendMessage(_lobbyName, _username, fileName, true);
+                RefreshPrivateMessage();
+            }
+        }
+
+
+        // Event handler for hyperlinks
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            // Open the link in the default browser
+            string pathname = e.Uri.AbsolutePath;
+
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.FileName = System.IO.Path.GetFileName(pathname); // Default filename is the same as the source file
+            saveFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.png; *.jpg)|*.png; *.jpg";  // Can adjust filters for specific file types
+
+            // If the user selects a location and clicks Save
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                string destinationPath = saveFileDialog.FileName;
+
+                try
+                {
+                    if (pathname.StartsWith("http") || pathname.StartsWith("ftp"))
+                    {
+                        // If it's a web URL, download the file
+                        using (WebClient webClient = new WebClient())
+                        {
+                            webClient.DownloadFile(pathname, destinationPath);
+                        }
+                    }
+                    else if (File.Exists(pathname))
+                    {
+                        // If it's a local file path, copy it to the destination
+                        File.Copy(pathname, destinationPath, true);
+                    }
+
+                    System.Diagnostics.Process.Start(destinationPath);
+                    MessageBox.Show("File downloaded successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred while downloading the file: {ex.Message} {destinationPath}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            }
+
+
+            // Prevent further navigation
+            e.Handled = true;
+        }
     }
 }
+

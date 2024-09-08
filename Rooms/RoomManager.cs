@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using Messages;
 
 namespace Rooms
 {
@@ -97,5 +99,53 @@ namespace Rooms
         {
             return PrivateRoomsList[roomname];
         }
+
+        public List<Message> GetParsedRoomMessages(string roomName, bool isPrivate)
+        {
+            Room room = isPrivate ? GetPrivateRoomByName(roomName) : GetRoomByName(roomName);
+            
+            if (room == null) return new List<Message>();
+
+            // If ParsedMessages is empty, parse all messages
+            if (room.ParsedMessages.Count == 0)
+            {
+                foreach (var message in room.Messages)
+                {
+                    ParseRoomMessage(roomName, message, isPrivate);
+                }
+            }
+
+            return room.ParsedMessages;
+        }
+
+        public void ParseRoomMessage(string roomName, string message, bool isPrivate)
+        {
+            Room room = isPrivate ? GetPrivateRoomByName(roomName) : GetRoomByName(roomName);
+            if (room == null) return;
+
+            Message chatMessage = ParseChatMessage(message);
+            room.ParsedMessages.Add(chatMessage);
+        }
+
+        private Message ParseChatMessage(string message)
+        {
+            Message chatMessage = new Message(message);
+
+            if (message.Contains(".txt") || message.Contains(".png") || message.Contains(".jpg"))
+            {
+                string pattern = @"([a-zA-Z]:\\|\\\\|\/)([^\s\\/]+[\\/])*[^\s\\/]+\.\w+";
+                Regex fileRegex = new Regex(pattern);
+
+                Match match = fileRegex.Match(message);
+                if (match.Success)
+                {
+                    chatMessage.Hyperlink = match.Value;
+                    chatMessage.MessageText = message.Substring(0, match.Index).Trim();
+                }
+            }
+
+            return chatMessage;
+        }
     }
 }
+

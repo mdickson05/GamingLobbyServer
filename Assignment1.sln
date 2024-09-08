@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Users", "Users\Users.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLobbyClient", "GameLobbyClient\GameLobbyClient.csproj", "{3F66BE99-EB9F-4192-990F-259FA4479569}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Messages", "Message\Messages.csproj", "{AE90AD1C-4978-4171-B011-8033047C262C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{3F66BE99-EB9F-4192-990F-259FA4479569}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3F66BE99-EB9F-4192-990F-259FA4479569}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3F66BE99-EB9F-4192-990F-259FA4479569}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AE90AD1C-4978-4171-B011-8033047C262C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AE90AD1C-4978-4171-B011-8033047C262C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AE90AD1C-4978-4171-B011-8033047C262C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AE90AD1C-4978-4171-B011-8033047C262C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

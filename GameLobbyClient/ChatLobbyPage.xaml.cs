@@ -21,6 +21,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Diagnostics;
 using System.Net;
+using static System.Net.Mime.MediaTypeNames;
+using System.Text.RegularExpressions;
+using Messages;
 
 namespace GameLobbyClient
 {
@@ -141,60 +144,17 @@ namespace GameLobbyClient
         private void RefreshChatLobby()
         {
             // Retrieve messages and users from the client
-            var messages = _client.GetRoomMessages(_lobbyName, false);
+            var parsedMessages = _client.GetParsedRoomMessages(_lobbyName, false);
             var users = _client.GetRoomUsers(_lobbyName, false);
 
-            // Create a list to hold the parsed ChatMessage objects
-            var parsedMessages = new List<ChatMessage>();
-
-            // Iterate through each message and create ChatMessage objects
-            foreach (var message in messages)
-            {
-                ChatMessage chatMessage = new ChatMessage();
-
-                // Check if the message contains a file link or is a regular text message
-                if (message.Contains(".txt") || message.Contains(".PNG") || message.Contains(".JPG"))
-                {
-                    // Treat the message as a hyperlinku
-                    string[] temp = message.Split();
-                    string username = temp[0];
-                    string link = "";
-                    for(int i = 0; i <  temp.Length; i++)
-                    {
-                        //Skip the first line
-                        if (i != 0)
-                        {
-                            link += temp[i] + " ";
-                        }
-                    }   
-                    chatMessage.Hyperlink = link;
-                    chatMessage.MessageText = username + ": ";
-                }
-                else
-                {
-                    // Treat the message as a normal message
-                    chatMessage.MessageText = message;
-                }
-
-                // Add the parsed message to the list
-                parsedMessages.Add(chatMessage);
-            }
-
-            // Update the UI by setting the ItemsSource for the chat history and user list
-            ChatHistoryBox.ItemsSource = parsedMessages;  
+            ChatHistoryBox.ItemsSource = parsedMessages;
             UserListBox.ItemsSource = users;                     
-        }
-
-        public class ChatMessage
-        {
-            public string MessageText { get; set; }
-            public string Hyperlink { get; set; }
         }
 
         private void UploadFileButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.PNG; *.JPG)|*.PNG; *.JPG";
+            openFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.PNG; *.JPG)|*.png; *.jpg";
 
             if (openFileDialog.ShowDialog() == true)
             {
@@ -208,11 +168,11 @@ namespace GameLobbyClient
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             // Open the link in the default browser
-            string pathname = e.Uri.ToString();
+            string pathname = e.Uri.AbsolutePath;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FileName = System.IO.Path.GetFileName(pathname); // Default filename is the same as the source file
-            saveFileDialog.Filter = "Text files (*.txt)|*.txt|Image files (*.PNG; *.JPG)|*.PNG; *.JPG";  // Can adjust filters for specific file types
+            saveFileDialog.Filter = "Text files(*.txt) | *.txt | Image files(*.PNG; *.JPG)| *.png; *.jpg";  // Can adjust filters for specific file types
 
             // If the user selects a location and clicks Save
             if (saveFileDialog.ShowDialog() == true)
@@ -243,8 +203,7 @@ namespace GameLobbyClient
                     MessageBox.Show($"An error occurred while downloading the file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            
-
+           
             // Prevent further navigation
             e.Handled = true;
         }

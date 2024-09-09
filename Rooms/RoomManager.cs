@@ -140,7 +140,7 @@ namespace Rooms
                 if (match.Success)
                 {
                     chatMessage.Hyperlink = match.Value;
-                    chatMessage.MessageText = message.Substring(0, match.Index).Trim();
+                    chatMessage.MessageText = message.Substring(0, match.Index).Trim() + " ";
                 }
             }
 

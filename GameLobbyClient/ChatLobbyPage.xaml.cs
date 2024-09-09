@@ -168,7 +168,7 @@ namespace GameLobbyClient
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             // Open the link in the default browser
-            string pathname = e.Uri.AbsolutePath;
+            string pathname = e.Uri.ToString();
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FileName = System.IO.Path.GetFileName(pathname); // Default filename is the same as the source file
@@ -178,6 +178,7 @@ namespace GameLobbyClient
             if (saveFileDialog.ShowDialog() == true)
             {
                 string destinationPath = saveFileDialog.FileName;
+                destinationPath.Replace("%20", " ");
 
                 try
                 {
@@ -189,14 +190,18 @@ namespace GameLobbyClient
                             webClient.DownloadFile(pathname, destinationPath);
                         }
                     }
-                    else if (File.Exists(pathname))
-                    {
-                        // If it's a local file path, copy it to the destination
-                        File.Copy(pathname, destinationPath, true);
-                    }
+                    else {
+                        //string localPath = Uri.UnescapeDataString(pathname);
+                        if (File.Exists(pathname))
+                        {
+                            // If it's a local file path, copy it to the destination
+                            
+                            File.Copy(pathname, destinationPath, true);
+                        }
 
-                    MessageBox.Show("File downloaded successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
-                    System.Diagnostics.Process.Start(destinationPath);
+                        MessageBox.Show("File downloaded successfully!", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                        System.Diagnostics.Process.Start(destinationPath);
+                    }
                 }
                 catch (Exception ex)
                 {

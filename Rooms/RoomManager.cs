@@ -133,14 +133,15 @@ namespace Rooms
 
             if (message.Contains(".txt") || message.Contains(".png") || message.Contains(".jpg"))
             {
-                string pattern = @"([a-zA-Z]:\\|\\\\|\/)([^\s\\/]+[\\/])*[^\s\\/]+\.\w+";
+                string pattern = @"^(https?|ftp|file):\/\/\S+|([a-zA-Z]:\\(?:[^\\\/:*?<>|]+\\)*[^\\\/:*?<>|]+)$";
                 Regex fileRegex = new Regex(pattern);
 
-                Match match = fileRegex.Match(message);
-                if (match.Success)
+                Match filepath = fileRegex.Match(message);
+
+                if (filepath.Success)
                 {
-                    chatMessage.Hyperlink = match.Value;
-                    chatMessage.MessageText = message.Substring(0, match.Index).Trim();
+                    chatMessage.Hyperlink = filepath.Value;
+                    chatMessage.MessageText = message.Substring(0, filepath.Index).Trim();
                 }
             }
 

@@ -37,6 +37,9 @@ namespace GameLobbyClient
             InitializeBackgroundTasks();
         }
 
+        /*
+         * Periodically updates both Messages and UserList using threading
+         */
         private void InitializeBackgroundTasks()
         {
             Task.Run(async () =>
@@ -58,6 +61,9 @@ namespace GameLobbyClient
             });
         }
 
+        /*
+         * Handles updating messages with threading
+         */
         private async Task UpdateMessages()
         {
             try
@@ -78,7 +84,9 @@ namespace GameLobbyClient
             }
         }
 
-
+        /*
+         * Handles updating userlist with threading
+         */
         private async Task UpdateUserList()
         {
             try
@@ -122,7 +130,6 @@ namespace GameLobbyClient
         }
 
         /*
-         * Copied above function just to test SendMessageButton_Click
          * Make popout warning to say already in private message
          */
         private void PrivateMessageButton_Click(object sender, RoutedEventArgs e)
@@ -150,16 +157,15 @@ namespace GameLobbyClient
             NavigationService.GoBack();
         }
 
+        /*
+         * Handles user prompted refresh
+         */
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
             Task.Run(async () =>
             {
                 await UpdateMessages();
                 await UpdateUserList();
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    MessageBox.Show("Lobby refreshed!"); // To delete?
-                });
             });
         }
 
@@ -176,6 +182,9 @@ namespace GameLobbyClient
             UserListBox.ItemsSource = users;
         }
 
+        /*
+         * Handles upload file button click
+         */
         private void UploadFileButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();

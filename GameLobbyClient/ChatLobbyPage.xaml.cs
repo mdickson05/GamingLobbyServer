@@ -22,12 +22,10 @@ namespace GameLobbyClient
         private IGLSInterface _client;
 
         /*
-         * Creates instances of both lists and adds some test strings
+         * ChatLobbyPage is where users can chat and upload/download files
          * 
          * DataContext is how "binding" works inside the xml
          * We bind the list to a specific object/thing
-         * This will be replaced later when we incorporate classes and instances
-         * 
          */
         public ChatLobbyPage(string lobbyName, IGLSInterface client, string username)
         {
@@ -40,6 +38,9 @@ namespace GameLobbyClient
             InitializeBackgroundTasks();
         }
 
+        /*
+         * Periodically updates both Messages and UserList using threading
+         */
         private void InitializeBackgroundTasks()
         {
             Task.Run(async () =>
@@ -63,6 +64,9 @@ namespace GameLobbyClient
 
         }
 
+        /*
+         * Handles updating messages with threading
+         */
         private async Task UpdateMessages()
         {
             try
@@ -82,6 +86,9 @@ namespace GameLobbyClient
             }
         }
 
+        /*
+         * Handles updating userlist with threading
+         */
         private async Task UpdateUserList()
         {
             try
@@ -168,6 +175,9 @@ namespace GameLobbyClient
             NavigationService.Navigate(loginPage);
         }
 
+        /*
+         * Simple back button to leave chat room
+         */
         private void BackButton_Click(object sender, RoutedEventArgs e)
         {
             _client.LeaveRoom(_lobbyName, _username, false);
@@ -179,8 +189,11 @@ namespace GameLobbyClient
          */
         private void RefreshButton_Click(object sender, RoutedEventArgs e)
         {
-            RefreshChatLobby();
-            MessageBox.Show("Lobby refreshed!"); //Delete this later, just emphasizing the refresh
+            Task.Run(async () =>
+            {
+                await UpdateMessages();
+                await UpdateUserList();
+            });
         }
 
         /*
@@ -197,6 +210,9 @@ namespace GameLobbyClient
             UserListBox.ItemsSource = users;
         }
 
+        /*
+         * Handles upload file button click
+         */
         private void UploadFileButton_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();

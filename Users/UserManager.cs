@@ -11,8 +11,7 @@ namespace Users
 
         public UserManager()
         {
-            // statically call UserGenerator to generate the five users needed to populate a server
-            this.Users = UserGenerator.GenerateUsers();
+            this.Users = new Dictionary<string, User>();
             this.LoggedInUsers = new List<string>();
         }
 

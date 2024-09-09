@@ -1,4 +1,6 @@
 ﻿using DataServer;
+using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -21,32 +23,43 @@ namespace GameLobbyClient
         /* 
          * Takes username from loginbox and passes to MainLobbyPage
          */
-        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        
+        private async void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             var username = LoginBox.Text;
             if (string.IsNullOrWhiteSpace(username))
             {
                 MessageBox.Show("Please enter a valid username.");
             }
-            else if (_client.AlreadyLoggedIn(username))
-            {
-                MessageBox.Show($"User '{username}' logged in elsewhere.");
-            }
-            else if (_client.AlreadyExists(username))
-            {
-                if (_client.Login(username))
-                {
-                    NavigationService.Navigate(new MainLobbyPage(_client, username));
-                }
-                else
-                {
-                    MessageBox.Show("Login failed. Please try again.");
-                }
-            }
             else
             {
-                _client.CreateUser(username);
-                NavigationService.Navigate(new MainLobbyPage(_client, username));
+                try
+                {
+                    if (await Task.Run(() => _client.AlreadyLoggedIn(username)))
+                    {
+                        MessageBox.Show($"User '{username}' logged in elsewhere.");
+                    }
+                    else if (await Task.Run(() => _client.AlreadyExists(username)))
+                    {
+                        if (await Task.Run(() => _client.Login(username)))
+                        {
+                            NavigationService.Navigate(new MainLobbyPage(_client, username));
+                        }
+                        else
+                        {
+                            MessageBox.Show("Login failed. Please try again.");
+                        }
+                    }
+                    else
+                    {
+                        await Task.Run(() => _client.CreateUser(username));
+                        NavigationService.Navigate(new MainLobbyPage(_client, username));
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"An error occurred: {ex.Message}");
+                }
             }
         }
         /*

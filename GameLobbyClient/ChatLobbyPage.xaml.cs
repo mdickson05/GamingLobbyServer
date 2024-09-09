@@ -1,29 +1,14 @@
 ﻿using DataServer;
+using Microsoft.Win32;
 using System;
-﻿using Microsoft.Win32;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
 using System.IO;
-using System.Linq;
-using System.Text;
+using System.Net;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Diagnostics;
-using System.Net;
-using static System.Net.Mime.MediaTypeNames;
-using System.Text.RegularExpressions;
-using Messages;
 
 namespace GameLobbyClient
 {
@@ -52,7 +37,68 @@ namespace GameLobbyClient
             _username = username;
             _lobbyName = lobbyName;
             LobbyNameBlock.Text = _lobbyName; //Sets lobby name
-            RefreshChatLobby();
+            InitializeBackgroundTasks();
+        }
+
+        private void InitializeBackgroundTasks()
+        {
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await UpdateMessages();
+                    await Task.Delay(1000); // Update every second
+                }
+            });
+
+            Task.Run(async () =>
+            {
+                while (true)
+                {
+                    await UpdateUserList();
+                    await Task.Delay(5000); // Update every second
+                }
+            });
+
+
+        }
+
+        private async Task UpdateMessages()
+        {
+            try
+            {
+                var messages = await Task.Run(() => _client.GetParsedRoomMessages(_lobbyName, false));
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    ChatHistoryBox.ItemsSource = messages;
+                });
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show($"Error updating messages: {ex.Message}");
+                });
+            }
+        }
+
+        private async Task UpdateUserList()
+        {
+            try
+            {
+                var users = await Task.Run(() => _client.GetRoomUsers(_lobbyName, false));
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    UserListBox.ItemsSource = users;
+                });
+            }
+            catch (Exception ex)
+            {
+                await Dispatcher.InvokeAsync(() =>
+                {
+                    MessageBox.Show($"Error updating user list: {ex.Message}");
+                });
+            }
         }
 
         /*
@@ -95,7 +141,7 @@ namespace GameLobbyClient
                 string privateLobbyName = makePrivateChatName(_username, userMessageName); //Created a private lobby name of current user and who they pm concatted
                 _client.CreatePrivateRoom(privateLobbyName);
                 _client.JoinRoom(privateLobbyName, _username, true);
-                PrivateMessagePage privateMessagePage = new PrivateMessagePage(_username, privateLobbyName, _client);
+                PrivateMessagePage privateMessagePage = new PrivateMessagePage(_username, privateLobbyName, userMessageName, _client);
                 NavigationService.Navigate(privateMessagePage);
             }
         }
@@ -148,7 +194,7 @@ namespace GameLobbyClient
             var users = _client.GetRoomUsers(_lobbyName, false);
 
             ChatHistoryBox.ItemsSource = parsedMessages;
-            UserListBox.ItemsSource = users;                     
+            UserListBox.ItemsSource = users;
         }
 
         private void UploadFileButton_Click(object sender, RoutedEventArgs e)
@@ -203,7 +249,7 @@ namespace GameLobbyClient
                     MessageBox.Show($"An error occurred while downloading the file: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-           
+
             // Prevent further navigation
             e.Handled = true;
         }

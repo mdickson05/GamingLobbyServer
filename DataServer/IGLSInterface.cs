@@ -1,13 +1,7 @@
-﻿using Rooms;
+﻿using Messages;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.ServiceModel;
-using System.ServiceModel.Description;
-using System.Text;
-using System.Threading.Tasks;
-using Users;
-using Messages;
 
 namespace DataServer
 {
@@ -42,6 +36,12 @@ namespace DataServer
         void SendMessage(string roomname, string username, string message, Boolean isPrivate);
         [OperationContract]
         List<Message> GetParsedRoomMessages(string roomName, bool isPrivate);
+        [OperationContract]
+        bool AlreadyLoggedIn(string username);
+        [OperationContract]
+        bool Login(String username);
+        [OperationContract]
+        bool AlreadyExists(String username);
 
     }
 }

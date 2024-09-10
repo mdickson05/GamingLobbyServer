@@ -133,7 +133,7 @@ namespace Rooms
 
             if (message.Contains(".txt") || message.Contains(".png") || message.Contains(".jpg"))
             {
-                string pattern = @"([a-zA-Z]:\\|\\\\|\/)([^\s\\/]+[\\/])*[^\s\\/]+\.\w+";
+                string pattern = @"^(https?|ftp|file):\/\/\S+|([a-zA-Z]:\\(?:[^\\\/:*?<>|]+\\)*[^\\\/:*?<>|]+)$";
                 Regex fileRegex = new Regex(pattern);
 
                 Match match = fileRegex.Match(message);

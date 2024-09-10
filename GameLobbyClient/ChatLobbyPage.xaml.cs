@@ -230,7 +230,7 @@ namespace GameLobbyClient
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
             // Open the link in the default browser
-            string pathname = e.Uri.ToString();
+            string pathname = e.Uri.AbsolutePath;
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FileName = System.IO.Path.GetFileName(pathname); // Default filename is the same as the source file

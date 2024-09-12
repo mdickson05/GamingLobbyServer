@@ -6,6 +6,7 @@ namespace Rooms
 {
     public class RoomManager
     {
+        //private int lobbyCount = 0;
         public Dictionary<string, Room> RoomsList { get; set; } // includes a list of all rooms in the Server
         public Dictionary<string, Room> PrivateRoomsList { get; set; } //List for private rooms, needed for private messages
         public RoomManager()
@@ -20,10 +21,11 @@ namespace Rooms
         // return boolean for extra error handling abilities
         public bool CreateNewRoom(string roomName)
         {
-            if (!RoomsList.ContainsKey(roomName))
+            if (!RoomsList.ContainsKey(roomName) && RoomsList.Count <= 5)
             {
                 Room newRoom = new Room(roomName);
                 RoomsList.Add(roomName, newRoom);
+                //lobbyCount++;
                 return true;
             }
             else
@@ -98,6 +100,11 @@ namespace Rooms
         public Room GetPrivateRoomByName(string roomname)
         {
             return PrivateRoomsList[roomname];
+        }
+
+        public int GetRoomCount()
+        {
+            return RoomsList.Count;
         }
 
         public List<Message> GetParsedRoomMessages(string roomName, bool isPrivate)

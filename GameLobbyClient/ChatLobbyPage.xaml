@@ -11,9 +11,9 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- For Lobby Name -->
+            <!-- For Lobby Name: Auto adjusts to content-->
             <RowDefinition Height="*"/>
-            <!-- For User and Chat Lists -->
+            <!-- For User and Chat Lists: Asterisk fills available space -->
             <RowDefinition Height="Auto"/>
             <!-- For Input and Send Button -->
         </Grid.RowDefinitions>

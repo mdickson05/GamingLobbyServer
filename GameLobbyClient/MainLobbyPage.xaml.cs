@@ -14,11 +14,10 @@ namespace GameLobbyClient
     /// </summary>
     public partial class MainLobbyPage : Page
     {
-        //Counts total lobbies to max of 5
-        private int lobbyCount = 0;
-        //String username temp which may be replaced by class use
+        //Stores client username
         private string userName;
 
+        //Passes instance of client
         private IGLSInterface _client;
 
         public MainLobbyPage(IGLSInterface client, string username)
@@ -75,6 +74,8 @@ namespace GameLobbyClient
         private void CreateLobbyButton_Click(object sender, RoutedEventArgs e)
         {
             string lobbyName = LobbyNameBox.Text;
+            int lobbyCount = _client.GetRoomCount();
+
             if (lobbyCount >= 5)
             {
                 MessageBox.Show("Maximum number of lobbies reached.");
@@ -205,22 +206,13 @@ namespace GameLobbyClient
             Task.Run(async () =>
             {
                 await UpdateLobbyList();
-                await Dispatcher.InvokeAsync(() =>
-                {
-                    MessageBox.Show("Lobby refreshed!");
-                });
             });
-
-            // RefreshChatLobby();
-            // MessageBox.Show("Lobby refreshed!"); //Delete this later, just emphasizing the refresh
         }
 
         /*
          * Simple refresh method that refreshes LobbyButtons updating them based
          * on server information.
          */
-
-        // Could remove?
         private void RefreshChatLobby()
         {
             var lobbies = _client.GetAvailableLobbies();

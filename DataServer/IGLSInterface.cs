@@ -18,6 +18,8 @@ namespace DataServer
         [OperationContract]
         void CreatePrivateRoom(string roomname);
         [OperationContract]
+        int GetRoomCount();
+        [OperationContract]
         void DeleteRoom(string roomname);
         [OperationContract]
         void JoinRoom(string roomname, string username, Boolean isPrivate);

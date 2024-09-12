@@ -11,6 +11,7 @@ namespace DataServer
     [ServiceBehavior(ConcurrencyMode = ConcurrencyMode.Multiple, UseSynchronizationContext = false)]
     public class GLSImplementation : IGLSInterface
     {
+        //Private static readonly makes persistent across clients
         private static readonly RoomManager roomManager = new RoomManager();
         private static readonly UserManager userManager = new UserManager();
         public RoomManager RoomManager => roomManager;
@@ -49,6 +50,11 @@ namespace DataServer
         public void CreatePrivateRoom(string roomname)
         {
             RoomManager.CreateNewPrivateRoom(roomname);
+        }
+
+        public int GetRoomCount()
+        {
+            return RoomManager.GetRoomCount();
         }
 
         public void DeleteRoom(string roomname)
